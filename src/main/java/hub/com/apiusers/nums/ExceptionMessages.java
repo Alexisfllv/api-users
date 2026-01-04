@@ -1,4 +1,4 @@
-package hub.com.apiusers.entity;
+package hub.com.apiusers.nums;
 
 public enum ExceptionMessages {
 

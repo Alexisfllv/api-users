@@ -1,10 +1,9 @@
 package hub.com.apiusers.service.domain;
 
-import hub.com.apiusers.entity.ExceptionMessages;
+import hub.com.apiusers.nums.ExceptionMessages;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.repo.RoleRepo;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
