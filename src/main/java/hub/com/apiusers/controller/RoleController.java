@@ -3,6 +3,8 @@ package hub.com.apiusers.controller;
 
 import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.service.RoleService;
+import hub.com.apiusers.util.ApiResponse.GenericResponse;
+import hub.com.apiusers.util.ApiResponse.StatusApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,9 @@ public class RoleController {
 
     // findByIdRole
     @GetMapping("/{id}")
-    public ResponseEntity<RoleDTOResponse> findByIdRoleGet(@PathVariable Long id){
+    public ResponseEntity<GenericResponse<RoleDTOResponse>> findByIdRoleGet(@PathVariable Long id){
         RoleDTOResponse dto = roleService.findByIdRole(id);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponse<>(StatusApi.SUCCESS,dto));
     }
 }
