@@ -1,6 +1,8 @@
 package hub.com.apiusers.service.domain;
 
+import hub.com.apiusers.entity.ExceptionMessages;
 import hub.com.apiusers.entity.Role;
+import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.repo.RoleRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ public class RoleServiceDomain {
     // role exist
     public Role roleExists(Long id){
         return roleRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("not found 404"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(ExceptionMessages.RESOURCE_NOT_FOUND_ERROR.message()+id));
     }
 }
