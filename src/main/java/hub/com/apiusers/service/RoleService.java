@@ -11,5 +11,4 @@ public interface RoleService {
     RoleDTOResponse findByIdRole (Long id);
 
 
-
 }

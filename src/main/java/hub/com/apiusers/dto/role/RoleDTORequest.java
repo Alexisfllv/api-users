@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record RoleDTORequest(
-
         @Schema(description = "Role name.", example = "Admin", required = true)
         @NotBlank(message = "{field.required}")
         @Size(min = 2, max = 50, message = "{field.size.range}")
