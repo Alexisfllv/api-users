@@ -174,7 +174,23 @@
                     <excludes>
                         <exclude>**/integration/**</exclude>
                         <exclude>**/*IT.java</exclude>
+                        <!-- Spring Boot -->
+                        <exclude>**/ApiUsersApplication*</exclude>
+
+                        <!-- Controllers -->
+                        <exclude>**/controller/**</exclude>
+
+                        <!-- Config / Infra -->
+                        <exclude>**/config/**</exclude>
+
+                        <!-- Exceptions -->
+                        <exclude>**/exception/**</exclude>
+
+                        <!-- Api Response -->
+                        <exclude>**/util/**</exclude>
                     </excludes>
+
+
                 </configuration>
             </plugin>
         </plugins>
