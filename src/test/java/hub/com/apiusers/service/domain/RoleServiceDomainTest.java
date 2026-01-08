@@ -11,7 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,10 +32,12 @@ public class RoleServiceDomainTest {
 
     // default
     private Role role;
+    private List<Role> roles;
 
     @BeforeEach
     public void setUp() {
         role = new Role(1L,"Admin","Admin Detail");
+        roles = List.of(role);
     }
 
 
@@ -76,5 +82,26 @@ public class RoleServiceDomainTest {
             verifyNoMoreInteractions(roleRepo);
         }
 
+    }
+
+    @Nested
+    @DisplayName("Test page List Roles")
+    class pageListRolesTest{
+
+        @Test
+        @DisplayName("Test page list Roles")
+        void testPageListRolesSuccess(){
+            // Arrange
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<Role> expected = Page.empty(pageable);
+            when(roleRepo.findAll(pageable)).thenReturn(expected);
+            // Act
+            Page<Role> result = roleServiceDomain.findAll(pageable);
+
+            // Assert
+            assertSame(expected, result);
+
+            verify(roleRepo).findAll(pageable);
+        }
     }
 }
