@@ -10,7 +10,7 @@ public record RoleDTORequest(
         @Size(min = 2, max = 50, message = "{field.size.range}")
         String name,
 
-        @Schema(description = "Role descrption.", example = "Supervision complete and Authorizated", required = true)
+        @Schema(description = "Role description.", example = "Supervision complete and Authorizated", required = true)
         @NotBlank(message = "{field.required}")
         @Size(min = 2, max = 200, message = "{field.size.range}")
         String description
