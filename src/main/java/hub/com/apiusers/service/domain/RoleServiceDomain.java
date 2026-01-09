@@ -27,4 +27,9 @@ public class RoleServiceDomain {
     public Page<Role> findAll(Pageable pageable){
         return roleRepo.findAll(pageable);
     }
+
+    // role save
+    public void  saveRole(Role role){
+        roleRepo.save(role);
+    }
 }
