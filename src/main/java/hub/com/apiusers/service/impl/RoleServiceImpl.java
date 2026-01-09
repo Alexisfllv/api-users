@@ -7,6 +7,7 @@ import hub.com.apiusers.mapper.RoleMapper;
 import hub.com.apiusers.service.RoleService;
 import hub.com.apiusers.service.domain.RoleServiceDomain;
 import hub.com.apiusers.util.page.PageResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,14 @@ public class RoleServiceImpl implements RoleService {
                 rolePage.getTotalElements(),
                 rolePage.getTotalPages()
         );
+    }
+
+    @Transactional
+    @Override
+    public RoleDTOResponse createRole(RoleDTORequest roleDTORequest) {
+        Role entity = roleMapper.toRole(roleDTORequest);
+        roleServiceDomain.saveRole(entity);
+        RoleDTOResponse response = roleMapper.toDTOResponse(entity);
+        return response;
     }
 }
