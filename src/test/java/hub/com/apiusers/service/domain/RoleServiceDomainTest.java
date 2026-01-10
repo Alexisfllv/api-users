@@ -1,5 +1,7 @@
 package hub.com.apiusers.service.domain;
 
+import hub.com.apiusers.dto.role.RoleDTORequest;
+import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.repo.RoleRepo;
@@ -32,6 +34,8 @@ public class RoleServiceDomainTest {
 
     // default
     private Role role;
+    private RoleDTORequest roleDTORequest;
+    private RoleDTOResponse roleDTOResponse;
     private List<Role> roles;
 
     @BeforeEach
@@ -102,6 +106,23 @@ public class RoleServiceDomainTest {
             assertSame(expected, result);
 
             verify(roleRepo).findAll(pageable);
+        }
+    }
+
+    @Nested
+    @DisplayName("Test save Role")
+    class saveRoleTest{
+
+        @Test
+        @DisplayName("Test save Role Success")
+        void testSaveRoleSuccess(){
+            // Arrange
+            when(roleRepo.save(role)).thenReturn(role);
+            // Act
+            roleServiceDomain.saveRole(role);
+            // Assert
+            verify(roleRepo).save(role);
+
         }
     }
 }
