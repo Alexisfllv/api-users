@@ -1,5 +1,6 @@
 package hub.com.apiusers.service.impl;
 
+import hub.com.apiusers.dto.role.RoleDTORequest;
 import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.mapper.RoleMapper;
@@ -39,10 +40,14 @@ public class RoleServiceImplTest {
 
     // val
     private Role roleEntity;
+    private RoleDTORequest roleRequest;
+    private Role roleEmpty;
     private RoleDTOResponse roleResponse;
 
     @BeforeEach
     void setUp() {
+        roleEmpty = new Role(null,"Admin","Detail Admin");
+        roleRequest = new RoleDTORequest("Admin","Detail Admin");
         roleEntity = new Role(1L,"Admin","Detail Admin");
         roleResponse = new RoleDTOResponse(1L,"Admin","Detail Admin");
     }
@@ -111,6 +116,38 @@ public class RoleServiceImplTest {
             inOrder.verify(roleServiceDomain).findAll(pageable);
             inOrder.verify(roleMapper).toDTOResponse(roleEntity);
 
+
+        }
+    }
+
+    @Nested
+    @DisplayName("Post createRole Test")
+    class PostCreateRoleTest {
+
+        @Test
+        @DisplayName("Should createRole Success")
+        void testCreateRoleSuccess() {
+            // Arrange
+            when(roleMapper.toRole(roleRequest)).thenReturn(roleEmpty);
+            when(roleServiceDomain.saveRole(roleEmpty)).thenReturn(roleEntity);
+            when(roleMapper.toDTOResponse(roleEntity)).thenReturn(roleResponse);
+
+
+            // Act
+            RoleDTOResponse result = roleServiceImpl.createRole(roleRequest);
+
+            // Assert
+            assertAll(
+                    () -> assertEquals(1L,result.id()),
+                    () -> assertEquals(roleRequest.name(),result.name()),
+                    () -> assertEquals(roleRequest.description(),result.description())
+            );
+
+            InOrder inOrder = Mockito.inOrder(roleMapper,roleServiceDomain);
+            inOrder.verify(roleMapper).toRole(roleRequest);
+            inOrder.verify(roleServiceDomain).roleNameUnique(roleRequest.name());
+            inOrder.verify(roleServiceDomain).saveRole(roleEmpty);
+            inOrder.verify(roleMapper).toDTOResponse(roleEntity);
 
         }
     }
