@@ -1,7 +1,11 @@
 package hub.com.apiusers.service.domain;
 
+import hub.com.apiusers.dto.role.RoleDTORequest;
+import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.exception.ResourceNotFoundException;
+import hub.com.apiusers.exception.UniqueException;
+import hub.com.apiusers.nums.ExceptionMessages;
 import hub.com.apiusers.repo.RoleRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +36,11 @@ public class RoleServiceDomainTest {
 
     // default
     private Role role;
-    private List<Role> roles;
 
     @BeforeEach
     public void setUp() {
         role = new Role(1L,"Admin","Admin Detail");
-        roles = List.of(role);
+
     }
 
 
@@ -102,6 +105,52 @@ public class RoleServiceDomainTest {
             assertSame(expected, result);
 
             verify(roleRepo).findAll(pageable);
+        }
+    }
+
+    @Nested
+    @DisplayName("Test save Role")
+    class saveRoleTest{
+
+        @Test
+        @DisplayName("Test save Role Success")
+        void testSaveRoleSuccess(){
+            // Arrange
+            when(roleRepo.save(role)).thenReturn(role);
+            // Act
+            roleServiceDomain.saveRole(role);
+            // Assert
+            verify(roleRepo).save(role);
+
+        }
+    }
+
+    @Nested
+    @DisplayName("Test validate Name Role")
+    class roleNameUniqueTest{
+        @Test
+        @DisplayName("Test validate Name Role Success")
+        void testValidateNameRoleSuccess(){
+            // Arrange
+            String name = "Admin";
+            when(roleRepo.existsByName(name)).thenReturn(Boolean.FALSE);
+            // Act & Assert
+            assertDoesNotThrow(() -> roleServiceDomain.roleNameUnique(name));
+        }
+
+        @Test
+        @DisplayName("Test validate Name Role Exception")
+        void testValidateNameRoleException() {
+            // Arrange
+            String nameExist = "Admin";
+            when(roleRepo.existsByName(nameExist)).thenReturn(Boolean.TRUE);
+
+            // Act
+            UniqueException ex = assertThrows(UniqueException.class,
+                    () -> roleServiceDomain.roleNameUnique(nameExist));
+
+            // Assert
+            assertTrue(ex.getMessage().contains(ExceptionMessages.UNIQUE_EXC.message()));
         }
     }
 }

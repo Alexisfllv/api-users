@@ -51,6 +51,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    // Unique Exception
+    @ExceptionHandler(UniqueException.class)
+    public ResponseEntity<ErrorResponse> handleUniqueException(HttpServletRequest req, UniqueException ue){
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.CONFLICT,
+                ue.getMessage(),
+                req.getRequestURI(),
+                "Unique Exception"
+        );
+        log.warn("UniqueException at {} : {}", req.getRequestURI(), ue.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
 
 
     // others exception

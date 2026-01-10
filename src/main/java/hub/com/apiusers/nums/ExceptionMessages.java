@@ -2,7 +2,8 @@ package hub.com.apiusers.nums;
 
 public enum ExceptionMessages {
 
-    RESOURCE_NOT_FOUND_ERROR("Value dont found: ");
+    RESOURCE_NOT_FOUND_ERROR("Value dont found: "),
+    UNIQUE_EXC("Value already exists: "),;
 
     private final String message;
 
