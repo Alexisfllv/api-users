@@ -36,14 +36,11 @@ public class RoleServiceDomainTest {
 
     // default
     private Role role;
-    private RoleDTORequest roleDTORequest;
-    private RoleDTOResponse roleDTOResponse;
-    private List<Role> roles;
 
     @BeforeEach
     public void setUp() {
         role = new Role(1L,"Admin","Admin Detail");
-        roles = List.of(role);
+
     }
 
 
