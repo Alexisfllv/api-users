@@ -59,8 +59,8 @@ public class RoleServiceImpl implements RoleService {
         Role entity = roleMapper.toRole(roleDTORequest);
         // validate
         roleServiceDomain.roleNameUnique(entity.getName());
-        roleServiceDomain.saveRole(entity);
-        RoleDTOResponse response = roleMapper.toDTOResponse(entity);
+        Role roleSucces = roleServiceDomain.saveRole(entity);
+        RoleDTOResponse response = roleMapper.toDTOResponse(roleSucces);
         return response;
     }
 }
