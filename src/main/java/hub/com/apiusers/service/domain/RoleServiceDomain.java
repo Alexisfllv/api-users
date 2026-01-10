@@ -38,7 +38,7 @@ public class RoleServiceDomain {
     }
 
     // role save
-    public void  saveRole(Role role){
-        roleRepo.save(role);
+    public Role  saveRole(Role role){
+        return roleRepo.save(role);
     }
 }
