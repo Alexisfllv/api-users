@@ -40,7 +40,7 @@ public class RoleController {
                 .body(new GenericResponse<>(StatusApi.SUCCESS,paged));
     }
 
-    //POST
+    // POST
 
     // createRole
     @PostMapping
@@ -50,11 +50,22 @@ public class RoleController {
                 .body(new GenericResponse<>(StatusApi.CREATED,response));
     }
 
+    // PUT
+
     // updateRole
     @PutMapping("/{id}")
     public ResponseEntity<GenericResponse<RoleDTOResponse>> updateRolePut(@PathVariable Long id, @Valid @RequestBody RoleDTORequest request){
         RoleDTOResponse response = roleService.updateRole(request, id);
         return  ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponse<>(StatusApi.UPDATED,response));
+    }
+
+    // DELETE
+
+    // deleteByIdRole
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<GenericResponse<Void>> deleteRoleDelete(@PathVariable Long id){
+        roleService.deleteRole(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
