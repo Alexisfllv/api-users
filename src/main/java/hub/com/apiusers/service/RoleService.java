@@ -24,4 +24,9 @@ public interface RoleService {
     // updateRole
     RoleDTOResponse updateRole(RoleDTORequest roleDTORequest, Long id);
 
+    // DELETE
+
+    // deleteByIdRole
+    void deleteRole(Long id);
+
 }

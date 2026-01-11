@@ -186,4 +186,22 @@ public class RoleServiceImplTest {
 
         }
     }
+
+    @Nested
+    @DisplayName("Delete role Test")
+    class DeleteRoleTest {
+        @Test
+        @DisplayName("Should deleteRole Success")
+        void testDeleteRoleSuccess() {
+            // Arrange
+            Long idRoleExist = 1L;
+            when(roleServiceDomain.roleExists(idRoleExist)).thenReturn(roleEntity);
+            // Act
+
+            roleServiceImpl.deleteRole(idRoleExist);
+            // Assert & Verify
+            verify(roleServiceDomain).roleExists(idRoleExist);
+            verify(roleServiceDomain).deleteIdRole(idRoleExist);
+        }
+    }
 }
