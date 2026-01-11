@@ -53,6 +53,8 @@ public class RoleServiceImpl implements RoleService {
         );
     }
 
+    // POST
+
     @Transactional
     @Override
     public RoleDTOResponse createRole(RoleDTORequest roleDTORequest) {
@@ -64,6 +66,8 @@ public class RoleServiceImpl implements RoleService {
         return response;
     }
 
+    // PUT
+
     @Transactional
     @Override
     public RoleDTOResponse updateRole(RoleDTORequest roleDTORequest, Long id) {
@@ -74,5 +78,12 @@ public class RoleServiceImpl implements RoleService {
         Role roleSaved = roleServiceDomain.saveRole(roleExist);
         RoleDTOResponse response = roleMapper.toDTOResponse(roleSaved);
         return response;
+    }
+    //DELETE
+
+    @Override
+    public void deleteRole(Long id) {
+        Role roleExist = roleServiceDomain.roleExists(id);
+        roleServiceDomain.deleteIdRole(roleExist.getId());
     }
 }
