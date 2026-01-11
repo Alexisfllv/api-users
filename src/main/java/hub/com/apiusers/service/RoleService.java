@@ -20,4 +20,8 @@ public interface RoleService {
     // createRole
     RoleDTOResponse createRole(RoleDTORequest roleDTORequest);
 
+    // PUT
+    // updateRole
+    RoleDTOResponse updateRole(RoleDTORequest roleDTORequest, Long id);
+
 }

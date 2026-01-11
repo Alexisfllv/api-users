@@ -49,4 +49,12 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponse<>(StatusApi.CREATED,response));
     }
+
+    // updateRole
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse<RoleDTOResponse>> updateRolePut(@PathVariable Long id, @Valid @RequestBody RoleDTORequest request){
+        RoleDTOResponse response = roleService.updateRole(request, id);
+        return  ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponse<>(StatusApi.UPDATED,response));
+    }
 }
