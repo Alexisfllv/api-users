@@ -151,4 +151,39 @@ public class RoleServiceImplTest {
 
         }
     }
+
+    @Nested
+    @DisplayName("Put updateRole Test")
+    class PutUpdateRoleTest {
+
+        @Test
+        @DisplayName("Should updateRole Success")
+        void testUpdateRoleSuccess() {
+            // Arrange
+            Long roleIdExist = 1L;
+            RoleDTORequest roleUpdateRequest = new RoleDTORequest("Administrator","Detail Administrator");
+            Role roleUpdate = new Role(1L,"Administrator","Detail Administrator");
+            RoleDTOResponse roleUpdateResponse = new RoleDTOResponse(1L,"Administrator","Detail Administrator");
+            when(roleServiceDomain.roleExists(roleIdExist)).thenReturn(roleEntity);
+            when(roleServiceDomain.saveRole(roleEntity)).thenReturn(roleUpdate);
+            when(roleMapper.toDTOResponse(roleUpdate)).thenReturn(roleUpdateResponse);
+            // Act
+            RoleDTOResponse result = roleServiceImpl.updateRole(roleUpdateRequest,roleIdExist);
+
+            // Assert
+            assertAll(
+                    () -> assertEquals(roleIdExist,result.id()),
+                    () -> assertEquals("Administrator",result.name()),
+                    () -> assertEquals("Detail Administrator",result.description())
+            );
+
+            // Verify
+            InOrder inOrder = Mockito.inOrder(roleMapper,roleServiceDomain);
+            inOrder.verify(roleServiceDomain).roleExists(roleIdExist);
+            inOrder.verify(roleServiceDomain).roleNameUnique(roleUpdateRequest.name());
+            inOrder.verify(roleServiceDomain).saveRole(roleEntity);
+            inOrder.verify(roleMapper).toDTOResponse(roleUpdate);
+
+        }
+    }
 }
