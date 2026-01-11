@@ -153,4 +153,21 @@ public class RoleServiceDomainTest {
             assertTrue(ex.getMessage().contains(ExceptionMessages.UNIQUE_EXC.message()));
         }
     }
+
+    @Nested
+    @DisplayName("Test Delete Id Role")
+    class deleteIdRoleTest{
+        @Test
+        @DisplayName("Test validate id Role Success")
+        void testValidateIdRoleSuccess(){
+            // Arrange
+            Long idRoleExist = 1L;
+
+            // Act
+            roleServiceDomain.deleteIdRole(idRoleExist);
+
+            // Assert
+            verify(roleRepo).deleteById(idRoleExist);
+        }
+    }
 }
