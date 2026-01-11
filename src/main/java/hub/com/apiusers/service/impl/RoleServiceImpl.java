@@ -63,4 +63,16 @@ public class RoleServiceImpl implements RoleService {
         RoleDTOResponse response = roleMapper.toDTOResponse(roleSucces);
         return response;
     }
+
+    @Transactional
+    @Override
+    public RoleDTOResponse updateRole(RoleDTORequest roleDTORequest, Long id) {
+        Role roleExist = roleServiceDomain.roleExists(id);
+        roleExist.setName(roleDTORequest.name());
+        roleExist.setDescription(roleDTORequest.description());
+        roleServiceDomain.roleNameUnique(roleDTORequest.name());
+        Role roleSaved = roleServiceDomain.saveRole(roleExist);
+        RoleDTOResponse response = roleMapper.toDTOResponse(roleSaved);
+        return response;
+    }
 }
