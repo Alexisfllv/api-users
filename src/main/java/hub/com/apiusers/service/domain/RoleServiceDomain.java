@@ -41,4 +41,9 @@ public class RoleServiceDomain {
     public Role  saveRole(Role role){
         return roleRepo.save(role);
     }
+
+    // delete id
+    public void deleteIdRole(Long id){
+        roleRepo.deleteById(id);
+    }
 }
