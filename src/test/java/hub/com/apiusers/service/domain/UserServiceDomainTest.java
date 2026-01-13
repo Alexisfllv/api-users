@@ -47,7 +47,7 @@ public class UserServiceDomainTest {
 
     @Nested
     @DisplayName("Test find id User")
-    class FindIdUserTest {
+    class findIdUserTest {
 
         @Test
         @DisplayName("Test find id User Success")
@@ -90,7 +90,7 @@ public class UserServiceDomainTest {
 
     @Nested
     @DisplayName("Test findAll Page")
-    class FindAllPageTest{
+    class findAllPageTest{
         @Test
         @DisplayName("Test find All User Success")
         public void testFindAllUserSuccess(){
