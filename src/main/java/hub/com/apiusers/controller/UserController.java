@@ -4,13 +4,12 @@ import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.service.UserService;
 import hub.com.apiusers.util.ApiResponse.GenericResponse;
 import hub.com.apiusers.util.ApiResponse.StatusApi;
+import hub.com.apiusers.util.page.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +24,14 @@ public class UserController {
         UserDTOResponse response = userService.findByIdUser(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponse<>(StatusApi.SUCCESS, response));
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<GenericResponse<PageResponse<UserDTOResponse>>> pageListUserGet(
+            @RequestParam(defaultValue = "0")int page,
+            @RequestParam(defaultValue = "3") int size){
+        PageResponse<UserDTOResponse> paged = userService.pageListUser(page, size);
+        return  ResponseEntity.status(HttpStatus.OK)
+                .body(new GenericResponse<>(StatusApi.SUCCESS, paged));
     }
 }

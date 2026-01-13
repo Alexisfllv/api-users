@@ -6,6 +6,8 @@ import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.nums.ExceptionMessages;
 import hub.com.apiusers.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +21,11 @@ public class UserServiceDomain {
                 .orElseThrow( () ->
                         new ResourceNotFoundException(ExceptionMessages.RESOURCE_NOT_FOUND_ERROR.message()+id)
                 );
+    }
+
+    // user page findAll
+    public Page<User> findAllPage(Pageable pageable){
+        return userRepo.findAll(pageable);
     }
 
 }
