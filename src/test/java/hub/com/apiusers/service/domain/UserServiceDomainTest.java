@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -83,5 +86,26 @@ public class UserServiceDomainTest {
             verifyNoMoreInteractions(userRepo);
         }
 
+    }
+
+    @Nested
+    @DisplayName("Test findAll Page")
+    class FindAllPageTest{
+        @Test
+        @DisplayName("Test find All User Success")
+        public void testFindAllUserSuccess(){
+            // Arrange
+            int page = 1;
+            int size = 3;
+            Pageable pageable = PageRequest.of(page, size);
+            Page<User> expected = Page.empty(pageable);
+            when(userRepo.findAll(pageable)).thenReturn(expected);
+            // Act
+            Page<User> result = userServiceDomain.findAllPage(pageable);
+            // Assert
+            assertSame(expected,result);
+            // Verify
+            verify(userRepo).findAll(pageable);
+        }
     }
 }
