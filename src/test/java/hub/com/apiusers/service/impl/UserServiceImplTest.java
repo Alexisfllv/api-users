@@ -1,6 +1,7 @@
 package hub.com.apiusers.service.impl;
 
 import hub.com.apiusers.dto.role.RoleDTOResponse;
+import hub.com.apiusers.dto.user.UserDTORequest;
 import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
@@ -116,6 +117,41 @@ public class UserServiceImplTest {
             InOrder inOrder = Mockito.inOrder(userMapper, userServiceDomain);
             inOrder.verify(userServiceDomain).findAllPage(pageable);
             inOrder.verify(userMapper).toUserDTOResponse(user);
+        }
+    }
+
+    @Nested
+    @DisplayName("Post createUser Test")
+    class SaveUserTest{
+        @Test
+        @DisplayName("Should createUser success")
+        void testCreateUserSuccess() {
+            // Arrange
+            UserDTORequest reqEmpty = new UserDTORequest("Sara","123","ferr","ale@gmailcom", Set.of(role.getId()));
+            User userEmpty = new User(null,"Sara","123","ferr","ale@gmailcom",null, Set.of(role));
+            when(userMapper.toUser(reqEmpty)).thenReturn(userEmpty);
+            Set<Role> rolesExist = Set.of(role);
+            when(userServiceDomain.validateRoleExists(reqEmpty.roles())).thenReturn(rolesExist);
+            User userSaved = new User(1L,"Sara","123","ferr","ale@gmailcom",null, Set.of(role));
+            when(userServiceDomain.saveUser(userEmpty)).thenReturn(userSaved);
+            when(userMapper.toUserDTOResponse(userSaved)).thenReturn(userDTOResponse);
+
+            // Act
+            UserDTOResponse response = userServiceImpl.createUser(reqEmpty);
+
+            // Assert
+            assertAll(
+                    () -> assertEquals(userDTOResponse,response)
+            );
+
+            // InOrder - Verify
+            InOrder inOrder = Mockito.inOrder(userMapper, userServiceDomain);
+            inOrder.verify(userMapper).toUser(reqEmpty);
+            inOrder.verify(userServiceDomain).validateUniqueUsername(reqEmpty.username());
+            inOrder.verify(userServiceDomain).validateUniqueEmail(reqEmpty.email());
+            inOrder.verify(userServiceDomain).validateRoleExists(reqEmpty.roles());
+            inOrder.verify(userServiceDomain).saveUser(userEmpty);
+            inOrder.verify(userMapper).toUserDTOResponse(userSaved);
         }
     }
 
