@@ -1,6 +1,7 @@
 package hub.com.apiusers.service.impl;
 
 import hub.com.apiusers.dto.user.UserDTORequest;
+import hub.com.apiusers.dto.user.UserDTORequestUpdate;
 import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
@@ -78,6 +79,27 @@ public class UserServiceImpl implements UserService {
         user.setActive(true);
 
         User saved = userServiceDomain.saveUser(user);
+        return userMapper.toUserDTOResponse(saved);
+    }
+
+    @Transactional
+    @Override
+    public UserDTOResponse updateUser(Long id, UserDTORequestUpdate userDTORequestUpdate) {
+        // validate exist user
+        User userExist =  userServiceDomain.userExists(id);
+
+        userServiceDomain.validateUniqueUsername(userDTORequestUpdate.username());
+        userServiceDomain.validateUniqueEmail(userDTORequestUpdate.email());
+        Set<Role> rolesExist = userServiceDomain.validateRoleExists(userDTORequestUpdate.roles());
+
+        userExist.setUsername(userDTORequestUpdate.username());
+        userExist.setPassword(userDTORequestUpdate.password());
+        userExist.setFullName(userDTORequestUpdate.fullName());
+        userExist.setEmail(userDTORequestUpdate.email());
+        userExist.setActive(userDTORequestUpdate.active());
+        userExist.setRoles(rolesExist);
+
+        User saved = userServiceDomain.saveUser(userExist);
         return userMapper.toUserDTOResponse(saved);
     }
 }
