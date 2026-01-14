@@ -1,16 +1,19 @@
 package hub.com.apiusers.controller;
 
+import hub.com.apiusers.dto.user.UserDTORequest;
 import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.service.UserService;
 import hub.com.apiusers.util.ApiResponse.GenericResponse;
 import hub.com.apiusers.util.ApiResponse.StatusApi;
 import hub.com.apiusers.util.page.PageResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -34,4 +37,15 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponse<>(StatusApi.SUCCESS, paged));
     }
+
+
+    // POST
+
+    @PostMapping
+    public ResponseEntity<GenericResponse<UserDTOResponse>> createUserPost( @Valid @RequestBody UserDTORequest request){
+        UserDTOResponse response = userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GenericResponse<>(StatusApi.SUCCESS, response));
+    }
+
 }
