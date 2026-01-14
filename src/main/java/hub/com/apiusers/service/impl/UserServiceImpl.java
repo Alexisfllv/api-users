@@ -1,6 +1,8 @@
 package hub.com.apiusers.service.impl;
 
+import hub.com.apiusers.dto.user.UserDTORequest;
 import hub.com.apiusers.dto.user.UserDTOResponse;
+import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
 import hub.com.apiusers.mapper.UserMapper;
 import hub.com.apiusers.service.UserService;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -53,5 +57,27 @@ public class UserServiceImpl implements UserService {
                 pageUser.getTotalPages()
         );
 
+    }
+
+    @Transactional
+    @Override
+    public UserDTOResponse createUser(UserDTORequest request) {
+        User user = userMapper.toUser(request);
+
+        log.warn("UserDTORequest : "+user.toString());
+        // validate unique
+        userServiceDomain.validateUniqueUsername(request.username());
+        userServiceDomain.validateUniqueEmail(request.email());
+
+        // set user
+        Set<Role> rolesExist = userServiceDomain.validateRoleExists(request.roles());
+
+        // save
+
+        user.setRoles(rolesExist);
+        user.setActive(true);
+
+        User saved = userServiceDomain.saveUser(user);
+        return userMapper.toUserDTOResponse(saved);
     }
 }
