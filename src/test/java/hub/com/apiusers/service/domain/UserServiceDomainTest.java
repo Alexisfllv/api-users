@@ -247,4 +247,20 @@ public class UserServiceDomainTest {
             verifyNoMoreInteractions(userRepo);
         }
     }
+
+    @Nested
+    @DisplayName("Test deleteUser")
+    class deleteUserTest{
+        @Test
+        @DisplayName("Test deleteUser Success")
+        public void testDeleteUserSuccess(){
+            // Arrange
+            User userDeleted = user;
+            // Act
+            userServiceDomain.deleteUser(userDeleted);
+            // Assert
+            verify(userRepo).delete(userDeleted);
+            verifyNoMoreInteractions(userRepo);
+        }
+    }
 }
