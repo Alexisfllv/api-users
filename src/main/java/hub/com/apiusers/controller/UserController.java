@@ -1,6 +1,7 @@
 package hub.com.apiusers.controller;
 
 import hub.com.apiusers.dto.user.UserDTORequest;
+import hub.com.apiusers.dto.user.UserDTORequestUpdate;
 import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.service.UserService;
 import hub.com.apiusers.util.ApiResponse.GenericResponse;
@@ -45,6 +46,15 @@ public class UserController {
     public ResponseEntity<GenericResponse<UserDTOResponse>> createUserPost( @Valid @RequestBody UserDTORequest request){
         UserDTOResponse response = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new GenericResponse<>(StatusApi.CREATED, response));
+    }
+
+    // PUT
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponse<UserDTOResponse>> updateUserPut(@PathVariable Long id, @Valid @RequestBody UserDTORequestUpdate request){
+        UserDTOResponse response = userService.updateUser(id, request);
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(new GenericResponse<>(StatusApi.SUCCESS, response));
     }
 

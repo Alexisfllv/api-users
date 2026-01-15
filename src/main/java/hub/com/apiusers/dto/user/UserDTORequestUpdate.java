@@ -32,9 +32,7 @@ public record UserDTORequestUpdate(
         @NotNull(message = "{field.required}")
         Boolean active,
 
-
-        @Schema(description = "User RoleId", example = "1",required = true)
+        @Schema(description = "User Role_Id", example = "1", required = true)
         @NotNull(message = "{field.required}")
-        @Positive(message = "{field.must.be.positive}")
-        Set<@Positive Long> roles
+        Set<@Positive(message = "{field.must.be.positive}") Long> roles
 ) {}
