@@ -102,4 +102,10 @@ public class UserServiceImpl implements UserService {
         User saved = userServiceDomain.saveUser(userExist);
         return userMapper.toUserDTOResponse(saved);
     }
+
+    @Override
+    public void deleteUser(Long id) {
+        User userExist = userServiceDomain.userExists(id);
+        userServiceDomain.deleteUser(userExist);
+    }
 }
