@@ -58,4 +58,11 @@ public class UserController {
                 .body(new GenericResponse<>(StatusApi.SUCCESS, response));
     }
 
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
