@@ -25,4 +25,9 @@ public interface UserService {
     // updateUser
     UserDTOResponse updateUser(Long id, UserDTORequestUpdate userDTORequestUpdate);
 
+    // DELETE
+
+    // deleteUser
+    void deleteUser(Long id);
+
 }
