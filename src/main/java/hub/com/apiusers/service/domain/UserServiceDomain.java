@@ -72,4 +72,9 @@ public class UserServiceDomain {
         return userRepo.save(user);
     }
 
+    // delete
+    public void deleteUser(User user){
+        userRepo.delete(user);
+    }
+
 }
