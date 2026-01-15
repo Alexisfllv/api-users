@@ -195,4 +195,24 @@ public class UserServiceImplTest {
         }
     }
 
+    @Nested
+    @DisplayName("Delete deleteUser Test")
+    class DeleteUserTest{
+        @Test
+        @DisplayName("Should deleteUser success")
+        void testDeleteUserSuccess() {
+            // Arrange
+            Long idUserExist = 1L;
+            User userDelete = user;
+            when(userServiceDomain.userExists(idUserExist)).thenReturn(userDelete);
+            // Act
+            userServiceImpl.deleteUser(idUserExist);
+            // Assert
+            InOrder inOrder = Mockito.inOrder(userServiceDomain);
+            inOrder.verify(userServiceDomain).userExists(idUserExist);
+            inOrder.verify(userServiceDomain).deleteUser(userDelete);
+            inOrder.verifyNoMoreInteractions();
+        }
+    }
+
 }
