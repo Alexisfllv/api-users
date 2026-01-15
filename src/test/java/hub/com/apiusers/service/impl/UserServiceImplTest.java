@@ -2,6 +2,7 @@ package hub.com.apiusers.service.impl;
 
 import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.dto.user.UserDTORequest;
+import hub.com.apiusers.dto.user.UserDTORequestUpdate;
 import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
@@ -29,6 +30,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -152,6 +154,44 @@ public class UserServiceImplTest {
             inOrder.verify(userServiceDomain).validateRoleExists(reqEmpty.roles());
             inOrder.verify(userServiceDomain).saveUser(userEmpty);
             inOrder.verify(userMapper).toUserDTOResponse(userSaved);
+        }
+    }
+
+    @Nested
+    @DisplayName("Put updateUser Test")
+    class UpdateUserTest{
+        @Test
+        @DisplayName("Should updateUser success")
+        void testUpdateUserSuccess() {
+            // Arrange
+            User userExist = new  User(1L,"Sara","123","ferr","ale@gmailcom",true, Set.of(role));
+            UserDTORequestUpdate userDTOupdate = new UserDTORequestUpdate("Sera","321","Sera less","sera@gmailcom",true, Set.of(role.getId()));
+            Long idUserExist = userExist.getId();
+            Set<Role> rolesExist = Set.of(role);
+            User userUpdate = new User(1L,"Sera","321","Sera less","sera@gmailcom",true, Set.of(role));
+            UserDTOResponse userUpdateResponse = new UserDTOResponse(1L,"Sera","Sera less","sera@gmailcom",true, Set.of(roleDTOResponse));
+
+            when(userServiceDomain.userExists(idUserExist)).thenReturn(userExist);
+            doNothing().when(userServiceDomain).validateUniqueUsername(userDTOupdate.username());
+            doNothing().when(userServiceDomain).validateUniqueEmail(userDTOupdate.email());
+            when(userServiceDomain.validateRoleExists(userDTOupdate.roles())).thenReturn(rolesExist);
+            when(userServiceDomain.saveUser(userExist)).thenReturn(userUpdate);
+            when(userMapper.toUserDTOResponse(userUpdate)).thenReturn(userUpdateResponse);
+            // Act
+            UserDTOResponse response = userServiceImpl.updateUser(idUserExist,userDTOupdate);
+            // Assert
+            assertAll(
+                    () -> assertEquals(userUpdateResponse,response)
+            );
+
+            // In Order - Verify
+            InOrder inOrder = Mockito.inOrder(userMapper, userServiceDomain);
+            inOrder.verify(userServiceDomain).userExists(idUserExist);
+            inOrder.verify(userServiceDomain).validateUniqueUsername(userDTOupdate.username());
+            inOrder.verify(userServiceDomain).validateUniqueEmail(userDTOupdate.email());
+            inOrder.verify(userServiceDomain).validateRoleExists(userDTOupdate.roles());
+            inOrder.verify(userServiceDomain).saveUser(userExist);
+            inOrder.verify(userMapper).toUserDTOResponse(userUpdate);
         }
     }
 
