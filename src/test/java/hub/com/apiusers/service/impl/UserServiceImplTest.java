@@ -7,6 +7,7 @@ import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
 import hub.com.apiusers.mapper.UserMapper;
+import hub.com.apiusers.projection.user.UserView;
 import hub.com.apiusers.service.domain.RoleServiceDomain;
 import hub.com.apiusers.service.domain.UserServiceDomain;
 import hub.com.apiusers.util.page.PageResponse;
@@ -28,10 +29,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -212,6 +211,36 @@ public class UserServiceImplTest {
             inOrder.verify(userServiceDomain).userExists(idUserExist);
             inOrder.verify(userServiceDomain).deleteUser(userDelete);
             inOrder.verifyNoMoreInteractions();
+        }
+    }
+    @Nested
+    @DisplayName("Get findActiveUsers Test")
+    class GetfindActiveUsersTest{
+
+        @Test
+        @DisplayName("Should getUser Success")
+        void testFindActiveUsers() {
+            // Arrange: mock de Projection
+            UserView activeUser = mock(UserView.class);
+            when(activeUser.getId()).thenReturn(1L);
+            when(activeUser.getUsername()).thenReturn("john");
+            when(activeUser.getEmail()).thenReturn("john@mail.com");
+
+            when(userServiceDomain.findByActiveTrue()).thenReturn(List.of(activeUser));
+
+            // Act
+            List<UserView> result = userServiceImpl.findActiveUsers();
+
+            // Assert
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            assertEquals(1L, result.get(0).getId());
+            assertEquals("john", result.get(0).getUsername());
+            assertEquals("john@mail.com", result.get(0).getEmail());
+
+            // Verify
+            verify(userServiceDomain, times(1)).findByActiveTrue();
+            verifyNoMoreInteractions(userServiceDomain);
         }
     }
 

@@ -3,14 +3,19 @@ package hub.com.apiusers.service;
 import hub.com.apiusers.dto.user.UserDTORequest;
 import hub.com.apiusers.dto.user.UserDTORequestUpdate;
 import hub.com.apiusers.dto.user.UserDTOResponse;
+import hub.com.apiusers.projection.user.UserView;
 import hub.com.apiusers.util.page.PageResponse;
-import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 public interface UserService {
     // GET
 
     // findByIdUser
     UserDTOResponse findByIdUser(Long id);
+
+    // projection
+    List<UserView> findActiveUsers();
 
     // pageListUser
     PageResponse<UserDTOResponse> pageListUser(int page, int size);
@@ -29,5 +34,6 @@ public interface UserService {
 
     // deleteUser
     void deleteUser(Long id);
+
 
 }

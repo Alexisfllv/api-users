@@ -6,6 +6,7 @@ import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
 import hub.com.apiusers.mapper.UserMapper;
+import hub.com.apiusers.projection.user.UserView;
 import hub.com.apiusers.service.UserService;
 import hub.com.apiusers.service.domain.UserServiceDomain;
 import hub.com.apiusers.util.page.PageResponse;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -107,5 +109,10 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User userExist = userServiceDomain.userExists(id);
         userServiceDomain.deleteUser(userExist);
+    }
+
+    @Override
+    public List<UserView> findActiveUsers() {
+        return userServiceDomain.findByActiveTrue();
     }
 }
