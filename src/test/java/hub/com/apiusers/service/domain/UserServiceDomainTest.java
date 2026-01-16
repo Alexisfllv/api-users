@@ -7,6 +7,7 @@ import hub.com.apiusers.entity.User;
 import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.exception.UniqueException;
 import hub.com.apiusers.nums.ExceptionMessages;
+import hub.com.apiusers.projection.user.UserView;
 import hub.com.apiusers.repo.RoleRepo;
 import hub.com.apiusers.repo.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -260,6 +261,36 @@ public class UserServiceDomainTest {
             userServiceDomain.deleteUser(userDeleted);
             // Assert
             verify(userRepo).delete(userDeleted);
+            verifyNoMoreInteractions(userRepo);
+        }
+    }
+
+    @Nested
+    @DisplayName("Test findByActiveTrue")
+    class findByActiveTrueTest{
+        @Test
+        @DisplayName("Test findByActiveTrue Success")
+        public void testFindByActiveTrueSuccess(){
+            // Arrange
+            UserView activeUser = mock(UserView.class);
+            when(activeUser.getId()).thenReturn(1L);
+            when(activeUser.getUsername()).thenReturn("john");
+            when(activeUser.getEmail()).thenReturn("john@mail.com");
+
+            when(userRepo.findByActiveTrue()).thenReturn(List.of(activeUser));
+            // Act
+            List<UserView> result = userServiceDomain.findByActiveTrue();
+            // Assert
+            assertAll(
+                    () -> assertNotNull(result),
+                    () -> assertEquals(1,result.size()),
+                    () -> assertEquals(1L, result.get(0).getId()),
+                    () -> assertEquals("john", result.get(0).getUsername()),
+                    () -> assertEquals("john@mail.com", result.get(0).getEmail())
+            );
+
+            // Verify
+            verify(userRepo).findByActiveTrue();
             verifyNoMoreInteractions(userRepo);
         }
     }
