@@ -1,11 +1,11 @@
 package hub.com.apiusers.service.domain;
 
-import hub.com.apiusers.dto.user.UserDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.entity.User;
 import hub.com.apiusers.exception.ResourceNotFoundException;
 import hub.com.apiusers.exception.UniqueException;
 import hub.com.apiusers.nums.ExceptionMessages;
+import hub.com.apiusers.projection.user.UserView;
 import hub.com.apiusers.repo.RoleRepo;
 import hub.com.apiusers.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -75,6 +76,12 @@ public class UserServiceDomain {
     // delete
     public void deleteUser(User user){
         userRepo.delete(user);
+    }
+
+
+    // projection
+    public List<UserView> findByActiveTrue(){
+        return userRepo.findByActiveTrue();
     }
 
 }
