@@ -3,6 +3,10 @@ package hub.com.apiusers.service;
 import hub.com.apiusers.dto.role.RoleDTORequest;
 import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.util.page.PageResponse;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public interface RoleService {
@@ -19,6 +23,10 @@ public interface RoleService {
 
     // createRole
     RoleDTOResponse createRole(RoleDTORequest roleDTORequest);
+
+    // importRole
+    List<RoleDTOResponse> importRolesFromCsv(MultipartFile file) throws IOException;
+
 
     // PUT
     // updateRole
