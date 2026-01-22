@@ -1,0 +1,51 @@
+id,name,description
+1,Admin,Acceso completo a todas las funciones del sistema
+2,Editor,Puede crear y modificar contenidos
+3,Viewer,Solo puede ver los contenidos
+4,Guest,Acceso limitado a funcionalidades públicas
+5,SuperAdmin,Administrador con control total y permisos avanzados
+6,Moderator,Modera comentarios y publicaciones
+7,Contributor,Puedes aportar contenidos pero no publicarlos directamente
+8,Manager,Gestiona equipos y recursos
+9,Operator,Realiza tareas operativas diarias
+10,Analyst,Analiza datos y reportes
+11,Developer,Desarrolla y mantiene software
+12,Tester,Prueba y valida funcionalidades
+13,Support,Atiende solicitudes de soporte
+14,Auditor,Revisa procesos y cumplimiento de normas
+15,HR,Gestiona personal y recursos humanos
+16,Finance,Acceso a reportes financieros
+17,Marketing,Gestiona campañas y promociones
+18,Sales,Gestiona clientes y ventas
+19,ProductOwner,Define requerimientos y prioridades de producto
+20,ScrumMaster,Facilita procesos ágiles y sprints
+21,Designer,Diseña interfaces y gráficos
+22,ContentWriter,Escribe contenidos y documentación
+23,SEO,Optimiza contenidos para motores de búsqueda
+24,Intern,Acceso limitado para aprendizaje
+25,Alumni,Exempleado con acceso restringido
+26,Partner,Colaborador externo con permisos específicos
+27,Vendor,Proveedor con acceso limitado a la plataforma
+28,Customer,Cliente con acceso a su información
+29,Subscriber,Suscrito con acceso a contenidos premium
+30,ModeratorAdmin,Supervisa moderadores y contenido
+31,TechLead,Lider técnico de equipo
+32,QALead,Lider de calidad y pruebas
+33,DataEngineer,Gestiona pipelines y bases de datos
+34,DataScientist,Genera insights y modelos de datos
+35,SupportLead,Lider de soporte y atención al cliente
+36,Compliance,Verifica cumplimiento regulatorio
+37,Legal,Acceso a documentos legales y contratos
+38,EditorAdmin,Supervisa a todos los editores
+39,ContentManager,Gestiona todos los contenidos
+40,OperationsManager,Gestiona operaciones diarias
+41,SystemAdmin,Administra servidores y sistemas
+42,NetworkAdmin,Administra redes y seguridad
+43,DevOps,Implementa integraciones y despliegues
+44,SecurityOfficer,Supervisa seguridad de la información
+45,Trainer,Capacita y entrena al personal
+46,Coach,Mentoría de equipos y personas
+47,Consultant,Asesora en procesos y estrategias
+48,Advisor,Da recomendaciones estratégicas
+49,Reviewer,Revisa trabajos y documentos
+50,Archivist,Gestiona archivos y documentación histórica

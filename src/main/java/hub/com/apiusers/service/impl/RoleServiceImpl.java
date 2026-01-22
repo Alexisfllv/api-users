@@ -5,6 +5,7 @@ import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.mapper.RoleMapper;
 import hub.com.apiusers.service.RoleService;
+import hub.com.apiusers.service.domain.RoleServiceCvsDomain;
 import hub.com.apiusers.service.domain.RoleServiceDomain;
 import hub.com.apiusers.util.page.PageResponse;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
     private final RoleServiceDomain roleServiceDomain;
+    private final RoleServiceCvsDomain roleServiceCvsDomain;
 
     // GET
     @Override
@@ -64,6 +70,24 @@ public class RoleServiceImpl implements RoleService {
         Role roleSucces = roleServiceDomain.saveRole(entity);
         RoleDTOResponse response = roleMapper.toDTOResponse(roleSucces);
         return response;
+    }
+
+    @Override
+    public List<RoleDTOResponse> importRolesFromCsv(MultipartFile file) throws IOException {
+        // names exists
+        List<String> existingNames = roleServiceCvsDomain.roleExists();
+
+        log.info("Listado de existentes"+existingNames);
+        // imports
+        List<Role> rolesToInsert = roleServiceCvsDomain.parseRolesFromCsv(file, existingNames);
+
+        // save all
+        roleServiceCvsDomain.saveAllImport(rolesToInsert);
+
+        //  mapps
+        return rolesToInsert.stream()
+                .map(role -> roleMapper.toDTOResponse(role))
+                .toList();
     }
 
     // PUT

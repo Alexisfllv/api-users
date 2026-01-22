@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,6 +52,18 @@ public class RoleController {
         RoleDTOResponse response = roleService.createRole(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new GenericResponse<>(StatusApi.CREATED,response));
+    }
+
+    // importRoles
+    @PostMapping("/import")
+    public ResponseEntity<GenericResponse<List<RoleDTOResponse>>> importRolesFromCsvPost(@RequestParam("file") MultipartFile file){
+            try {
+                List<RoleDTOResponse> importRoles = roleService.importRolesFromCsv(file);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(new GenericResponse<>(StatusApi.SUCCESS,importRoles));
+            } catch (IOException e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
     }
 
     // PUT
