@@ -4,6 +4,7 @@ import hub.com.apiusers.dto.role.RoleDTORequest;
 import hub.com.apiusers.dto.role.RoleDTOResponse;
 import hub.com.apiusers.entity.Role;
 import hub.com.apiusers.mapper.RoleMapper;
+import hub.com.apiusers.service.domain.RoleServiceCvsDomain;
 import hub.com.apiusers.service.domain.RoleServiceDomain;
 import hub.com.apiusers.util.page.PageResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,14 +18,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleServiceImplTest {
@@ -34,6 +37,9 @@ public class RoleServiceImplTest {
 
     @Mock
     private RoleServiceDomain roleServiceDomain;
+
+    @Mock
+    private RoleServiceCvsDomain roleServiceCvsDomain;
 
     @InjectMocks
     private RoleServiceImpl roleServiceImpl;
@@ -149,6 +155,52 @@ public class RoleServiceImplTest {
             inOrder.verify(roleServiceDomain).saveRole(roleEmpty);
             inOrder.verify(roleMapper).toDTOResponse(roleEntity);
 
+        }
+    }
+
+    @Nested
+    @DisplayName("Post importRolesFromCsv")
+    class PostImportRolesFromCsvTest {
+        @Test
+        @DisplayName("Should importRolesFromCsv Success")
+        void testImportRolesFromCsvSuccess() throws Exception {
+            // Arrange
+            MultipartFile file = new MockMultipartFile(
+                    "file",
+                    "roles.csv",
+                    "text/csv",
+                    "id,name,desc\n1,ADMIN,Administrador".getBytes()
+            );
+
+            List<String> existingNames = List.of("GUEST");
+            Role roleC = new Role();
+            roleC.setId(1L);
+            roleC.setName("ADMIN");
+            roleC.setDescription("Administrador");
+
+            RoleDTOResponse dtoC = new RoleDTOResponse(1L,"ADMIN", "Administrador");
+
+
+            // Mocks
+            when(roleServiceCvsDomain.roleExists()).thenReturn(existingNames);
+            when(roleServiceCvsDomain.parseRolesFromCsv(file, existingNames))
+                    .thenReturn(List.of(roleC));
+            doNothing().when(roleServiceCvsDomain).saveAllImport(List.of(roleC));
+            when(roleMapper.toDTOResponse(roleC)).thenReturn(dtoC);
+
+            // Act
+            List<RoleDTOResponse> result = roleServiceImpl.importRolesFromCsv(file);
+
+            // Assert
+            assertEquals(1, result.size());
+            assertEquals("ADMIN", result.get(0).name());
+            assertEquals("Administrador", result.get(0).description());
+
+            // Verify flujo
+            verify(roleServiceCvsDomain).roleExists();
+            verify(roleServiceCvsDomain).parseRolesFromCsv(file, existingNames);
+            verify(roleServiceCvsDomain).saveAllImport(List.of(roleC));
+            verify(roleMapper).toDTOResponse(roleC);
         }
     }
 
