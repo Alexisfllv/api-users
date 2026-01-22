@@ -1,0 +1,113 @@
+package hub.com.apiusers.service.impl;
+
+import hub.com.apiusers.dto.role.RoleDTORequest;
+import hub.com.apiusers.dto.role.RoleDTOResponse;
+import hub.com.apiusers.entity.Role;
+import hub.com.apiusers.mapper.RoleMapper;
+import hub.com.apiusers.service.RoleService;
+import hub.com.apiusers.service.domain.RoleServiceCvsDomain;
+import hub.com.apiusers.service.domain.RoleServiceDomain;
+import hub.com.apiusers.util.page.PageResponse;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class RoleServiceImpl implements RoleService {
+
+    private final RoleMapper roleMapper;
+    private final RoleServiceDomain roleServiceDomain;
+    private final RoleServiceCvsDomain roleServiceCvsDomain;
+
+    // GET
+    @Override
+    public RoleDTOResponse findByIdRole(Long id) {
+        Role roleExist = roleServiceDomain.roleExists(id);
+
+        log.debug("Role exists: " + roleExist);
+        RoleDTOResponse response = roleMapper.toDTOResponse(roleExist);
+
+        return response;
+    }
+
+    @Override
+    public PageResponse<RoleDTOResponse> pageListRole(int page, int size) {
+        log.debug("page/size request : {} , {} ", page , size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Role> rolePage = roleServiceDomain.findAll(pageable);
+
+        return new PageResponse<>(
+                rolePage.getContent()
+                        .stream()
+                        .map(role -> roleMapper.toDTOResponse(role))
+                        .toList(),
+                rolePage.getNumber(),
+                rolePage.getSize(),
+                rolePage.getTotalElements(),
+                rolePage.getTotalPages()
+        );
+    }
+
+    // POST
+
+    @Transactional
+    @Override
+    public RoleDTOResponse createRole(RoleDTORequest roleDTORequest) {
+        Role entity = roleMapper.toRole(roleDTORequest);
+        // validate
+        roleServiceDomain.roleNameUnique(entity.getName());
+        Role roleSucces = roleServiceDomain.saveRole(entity);
+        RoleDTOResponse response = roleMapper.toDTOResponse(roleSucces);
+        return response;
+    }
+
+    @Override
+    public List<RoleDTOResponse> importRolesFromCsv(MultipartFile file) throws IOException {
+        // names exists
+        List<String> existingNames = roleServiceCvsDomain.roleExists();
+
+        log.info("Listado de existentes"+existingNames);
+        // imports
+        List<Role> rolesToInsert = roleServiceCvsDomain.parseRolesFromCsv(file, existingNames);
+
+        // save all
+        roleServiceCvsDomain.saveAllImport(rolesToInsert);
+
+        //  mapps
+        return rolesToInsert.stream()
+                .map(role -> roleMapper.toDTOResponse(role))
+                .toList();
+    }
+
+    // PUT
+
+    @Transactional
+    @Override
+    public RoleDTOResponse updateRole(RoleDTORequest roleDTORequest, Long id) {
+        Role roleExist = roleServiceDomain.roleExists(id);
+        roleExist.setName(roleDTORequest.name());
+        roleExist.setDescription(roleDTORequest.description());
+        roleServiceDomain.roleNameUnique(roleDTORequest.name());
+        Role roleSaved = roleServiceDomain.saveRole(roleExist);
+        RoleDTOResponse response = roleMapper.toDTOResponse(roleSaved);
+        return response;
+    }
+    //DELETE
+
+    @Override
+    public void deleteRole(Long id) {
+        Role roleExist = roleServiceDomain.roleExists(id);
+        roleServiceDomain.deleteIdRole(roleExist.getId());
+    }
+}
