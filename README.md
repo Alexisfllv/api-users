@@ -36,14 +36,10 @@ classDiagram
     User "0..*" -- "0..*" Role : user_roles
 ```
 
-```mermaid
-classDiagram
-    class BaseEntity {
-        <<abstract>>
-        createdAt : LocalDateTime
-        updatedAt : LocalDateTime
-    }
-```
+---
+### Directive
+
+![Diagram of API directives](directive.png)
 
 ---
 
@@ -122,6 +118,14 @@ Professional backend project for **user and role management** built with **Sprin
 * `POST /users` - Create user
 * `PUT /users/{id}` - Update user
 * `DELETE /users/{id}` - Delete user
+
+### Run
+```bash
+git clone <repo-url>
+cd api-users
+mvn clean install
+mvn spring-boot:run
+```
 
 ---
 
