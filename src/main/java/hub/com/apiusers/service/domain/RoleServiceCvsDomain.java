@@ -5,6 +5,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 import hub.com.apiusers.entity.Role;
+import hub.com.apiusers.exception.CsvDomainException;
 import hub.com.apiusers.repo.RoleRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,35 +35,36 @@ public class RoleServiceCvsDomain {
                 .collect(Collectors.toList());
     }
 
+    CSVReader createCsvReader(Reader reader) {
+        return new CSVReaderBuilder(reader)
+                .withSkipLines(1) // saltar cabecera
+                .build();
+    }
 
     // validar e importar
     public List<Role> parseRolesFromCsv(MultipartFile file, List<String> existingNames) throws IOException {
-
         // Set para control eficiente de duplicados
         Set<String> seenNames = new HashSet<>(existingNames);
 
-        log.warn("Listado de sets"+seenNames);
-        log.warn("Listado de existentes"+existingNames);
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-             CSVReader csvReader = new CSVReaderBuilder(reader)
-                     .withSkipLines(1) // saltar cabecera
-                     .build()) {
+             CSVReader csvReader = createCsvReader(reader)) {
 
-            // Stream del CSV, map a Role y filtrado de duplicados
-            return csvReader
-                    .readAll()
+            // Leemos todas las líneas, mapeamos a Role y filtramos duplicados
+            return csvReader.readAll()
                     .stream()
-                    .map(columns -> new AbstractMap.SimpleEntry<>(columns[1].trim(), columns[2].trim()))
-                    .filter(entry -> seenNames.add(entry.getKey())) // add() retorna false si ya existía
-                    .map(entry -> {
-                        Role role = new Role();
-                        role.setName(entry.getKey());
-                        role.setDescription(entry.getValue());
-                        return role;
+                    .map(c -> new AbstractMap.SimpleEntry<>(c[1].trim(), c[2].trim()))
+                    .filter(e -> seenNames.add(e.getKey())) // add() retorna false si ya existía
+                    .map(e -> {
+                        Role r = new Role();
+                        r.setName(e.getKey());
+                        r.setDescription(e.getValue());
+                        return r;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
+
         } catch (CsvException e) {
-            throw new RuntimeException("Error en service Domain CSV");
+            // Se lanza excepción de dominio profesional
+            throw new CsvDomainException("Error al procesar CSV", e);
         }
     }
 
