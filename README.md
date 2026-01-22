@@ -39,7 +39,7 @@ classDiagram
 ---
 ### Directive
 
-![Diagram of API directives](directive.png)
+![Diagram of API directives](direc.png)
 
 ---
 
