@@ -64,6 +64,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    // OpenCsvException
+    @ExceptionHandler(CsvDomainException.class)
+    public ResponseEntity<ErrorResponse> handleCsvDomainException(HttpServletRequest req, CsvDomainException ex) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                req.getRequestURI(),
+                "CSV Processing Error"
+        );
+
+        log.warn("CsvDomainException {} : error processing CSV", req.getRequestURI(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
 
     // others exception
 
